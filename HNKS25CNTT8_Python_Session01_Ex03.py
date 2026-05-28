@@ -1,72 +1,95 @@
 # Phân tích và thiết kế giải pháp
-# A Phân tích Input / Output
-# Input (Dữ liệu đầu vào)
-# Hệ thống yêu cầu nhân viên lễ tân nhập:
 
-# | Thông tin           | Biến           | Kiểu dữ liệu |
-# | ------------------- | -------------- | ------------ |
-# | Họ và tên bệnh nhân |  Name          |  str         |
-# | Mã bệnh án          |  id            |  str         |
-# | Khoa / Phòng khám   |  department    |  str         |
+# Input
 
-# Output (Dữ liệu đầu ra)
-# Hệ thống hiển thị:
-# Phiếu khám bệnh điện tử
-# Thông tin bệnh nhân
-# Thông báo xác nhận đăng ký thành 
+# patient_name	str
+# patient_age	    int
 
-# B. Đề xuất giải pháp
-# Ý tưởng xử lý
-# Hiển thị tiêu đề hệ thống
-# Dùng hàm input() để nhận thông tin bệnh nhân
-# Lưu dữ liệu vào các biến
-# Sử dụng print() để hiển thị phiếu khám theo định dạng đẹp mắt
-# Căn chỉnh dữ liệu bằng:
-# dấu :
-# khoảng trắng
-# ký tự = và -
+# Output
+# Nếu dữ liệu hợp lệ:
+# - In Phiếu khám bệnh điện tử gồm:
+#   + Họ tên
+#   + Tuổi
+#   + Kết quả phân luồng
+# Nếu dữ liệu không hợp lệ:
+#   + In thông báo lỗi
+#   + Không in phiếu khám
 
-# input() Nhập dữ liệu từ bàn phím       
-# print() Hiển thị thông tin ra màn hình 
+# Đề xuất giải pháp
+# Kiểm tra lỗi dữ liệu
 
-# C. Thiết kế thuật toán
+# Dùng: strip() để kiểm tra tên rỗng hoặc toàn khoảng trắng.
+# Toán tử logic:
+# patient_age < 0
+# patient_age > 150
 
-# Bắt đầu chương trình
+# Phân luồng bệnh nhân
 
-# Hiển thị tiêu đề hệ thống
-
-# Nhập họ tên bệnh nhân
-# Lưu vào patient_name
-
-# Nhập mã bệnh án
-# Lưu vào medical_code
-
-# Nhập khoa/phòng khám
-# Lưu vào department
-
-# Hiển thị phiếu khám bệnh:
-#     - Tiêu đề phiếu
-#     - Họ tên bệnh nhân
-#     - Mã bệnh án
-#     - Khoa khám
-#     - Trạng thái xác nhận
-
-# Kết thúc chương trình 
+# Dùng if-elif-else:
 
 
-print("   HỆ THỐNG TIẾP NHẬN BỆNH NHÂN")
+# Pseudocode
+# Bắt đầu
 
-Name = input("Nhập họ và tên bệnh nhân: ")
-id = input("Nhập mã bệnh án: ")
-department = input("Nhập khoa/phòng khám: ")
+# Nhập tên bệnh nhân
+# Nhập tuổi bệnh nhân
+
+# Kiểm tra dữ liệu:
+#     Nếu tên rỗng
+#         Báo lỗi
+#         Kết thúc
+
+#     Nếu tuổi < 0 hoặc > 150
+#         Báo lỗi
+#         Kết thúc
+
+# Phân luồng:
+#     Nếu tuổi < 6
+#         Ưu tiên bệnh nhi
+
+#     Ngược lại nếu tuổi >= 80
+#         Ưu tiên người cao tuổi
+
+#     Ngược lại
+#         Khám thường
+
+# In phiếu khám bệnh
+
+# Kết thúc
 
 
-print("\n========================================")
-print("       PHIẾU KHÁM BỆNH ĐIỆN TỬ")
 print("========================================")
-print("Họ tên bệnh nhân :", Name)
-print("Mã bệnh án       :", id)
-print("Khoa khám        :", department)
-print("----------------------------------------")
-print("Trạng thái       : Đăng ký thành công")
+print("   HỆ THỐNG PHÂN LUỒNG BỆNH NHÂN")
 print("========================================")
+
+patient_name = input("Nhập họ và tên bệnh nhân: ")
+patient_age = int(input("Nhập tuổi bệnh nhân: "))
+
+
+if patient_name.strip() == "" or patient_age < 0 or patient_age > 150:
+
+    print("\nLỖI: Tên không hợp lệ hoặc Tuổi nằm ngoài phạm vi con người (0-150)!")
+else:
+    if patient_age < 6:
+
+        triage_result = "ƯU TIÊN: Bệnh nhi - Chuyển thẳng phòng khám Nhi."
+    elif patient_age >= 80:
+
+        triage_result = (
+            "ƯU TIÊN: Người cao tuổi - Hỗ trợ xe lăn, chuyển phòng khám Lão khoa."
+        )
+    else:
+
+        triage_result = "KHÁM THƯỜNG: Vui lòng lấy số thứ tự và chờ tới lượt tại sảnh."
+    print("\n========================================")
+    print("      PHIẾU KHÁM BỆNH ĐIỆN TỬ")
+    print("========================================")
+
+    print("Họ tên bệnh nhân :", patient_name)
+    print("Tuổi bệnh nhân   :", patient_age)
+
+    print("----------------------------------------")
+    print("Kết quả phân luồng:")
+    print(triage_result)
+
+    print("========================================")

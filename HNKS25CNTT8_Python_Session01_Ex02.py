@@ -1,18 +1,49 @@
 # Phân tích lỗi
 
-# Nguyên nhân nhập dữ liệu là số nhưng lại trả ra là chuỗi là do hàm input() trong py mặc định trả về kiểu dữ liệu string:
-# Đặc điểm của hàm input() trong Python
-# Hàm input():
-# Dùng để nhận dữ liệu từ bàn phím.
-# Giá trị trả về của input() luôn có kiểu str (chuỗi).
+# a. Toán tử logic đang bị sử dụng sai
 
-print("- HỆ THỐNG NHẬP CHỈ SỐ SINH TỒN -")
+# Code hiện tại dùng: or
 
-name_patient = input("Nhập tên bệnh nhân: ")
-weight = float(input("Nhập cân nặng bệnh nhân: "))
+# Trong khi bài toán yêu cầu:
 
-print("- KIỂM TRA DỮ LIỆU LƯU TRỮ -")
-print("Bệnh nhân:", name_patient)
-print("Cân nặng đã nhập:", weight)
-print("CẢNH BÁO - Kiểu dữ liệu đang lưu là:")
-print(type(weight))
+# Người hiến máu phải đủ tuổi
+# Và đủ cân nặng
+
+# => Phải dùng: and
+
+# Dò luồng thực thi với: donor_age = 16 , donor_weight = 55
+
+# Điều kiện hiện tại: if donor_age >= 18 or donor_weight >= 50:
+
+# Kiểm tra:
+
+# 16 >= 18 -> False
+# 55 >= 50 -> True
+
+# Vì toán tử or:
+
+# Chỉ cần 1 điều kiện đúng
+# Kết quả toàn bộ biểu thức sẽ là True
+
+# => Chương trình in: ELIGIBLE
+
+# => Sai nghiệp vụ vì người hiến chưa đủ 18 tuổi.
+
+# Khác biệt giữa and và or
+# and	Tất cả điều kiện phải đúng
+# or	Chỉ cần một điều kiện đúng
+
+print("--- BLOOD DONOR SCREENING SYSTEM ---")
+
+donor_age = int(input("Enter donor's age: "))
+donor_weight = float(input("Enter donor's weight (kg): "))
+
+if donor_age >= 18 and donor_weight >= 50:
+    print("Result: ELIGIBLE - Donor meets all requirements.")
+
+else:
+    print("Result: NOT ELIGIBLE")
+    if donor_age < 18:
+        print("- Reason: Donor is under 18 years old.")
+    if donor_weight < 50:
+        print("- Reason: Donor weight is below 50 kg.")

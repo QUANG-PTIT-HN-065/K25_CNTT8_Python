@@ -1,81 +1,103 @@
+# Bảng thiết kế dữ liệu
+# | Tên biến      | Câu hỏi input                                   | Kiểu dữ liệu |
+# | ------------- | ----------------------------------------------- | ------------ |
+# | patient_name  | Nhập họ và tên bệnh nhân                        | str          |
+# | patient_age   | Nhập tuổi bệnh nhân dạng                        | int          |
+# | spo2_level    | Nhập chỉ số SpO2 dạng số nguyên %               | int          |
+# | heart_rate    | Nhập nhịp tim dạng số nguyên bpm                | int          |
+# | has_insurance | Bạn có thẻ BHYT không?                          | str          |
 
-# Input
-# | Dữ liệu          | Kiểu ban đầu |
-# | ---------------- | ------------ |
-# | patient_name     | str          |
-# | patient_code     | str          |
-# | body_temperature | str          |
-# | heart_rate       | str          |
-# | body_weight      | str          |
-
-# Output
-# | Dữ liệu          | Kiểu mong muốn |
-# | ---------------- | -------------- |
-# | patient_name     | str            |
-# | patient_code     | str            |
-# | body_temperature | float          |
-# | heart_rate       | int            |
-# | body_weight      | float          |
-
-# Giải pháp xử lý
-# Dùng input() để thu thập dữ liệu.
-# Ép kiểu:
-# float() cho nhiệt độ và cân nặng.
-# int() cho nhịp tim.
-# Dùng print() hiển thị:
-# Phiếu khám bệnh điện tử.
-# Log kiểm tra kiểu dữ liệu.
-
-# Thuật toán
-
+# Pseudocode
 # Bắt đầu
+
 # Hiển thị tiêu đề hệ thống
 
 # Nhập thông tin bệnh nhân
-# Nhập chỉ số sinh hiệu
 
-# Ép kiểu dữ liệu:
-#     nhiệt độ -> float
-#     nhịp tim -> int
-#     cân nặng -> float
+# Phân luồng y khoa:
+#     Nếu spo2_level < 90 hoặc heart_rate > 120
+#         RED
 
-# Hiển thị phiếu khám bệnh
-# Hiển thị log kiểm tra kiểu dữ liệu
+#     Ngược lại nếu spo2_level từ 90-95
+#     hoặc heart_rate từ 100-120
+#         YELLOW
+
+#     Ngược lại
+#         GREEN
+
+# Tính viện phí:
+#     Nếu tuổi < 6 hoặc tuổi >= 80
+#         fee = 0
+
+#     Ngược lại nếu có BHYT
+#         fee = 250000
+
+#     Ngược lại
+#         fee = 500000
+
+# In Phiếu Khám Bệnh Điện Tử
+
+# In Log hệ thống:
+#     type() của các biến
 
 # Kết thúc
 
+
 print("==========================================")
-print("    KIOSK KHAI BÁO TỰ PHỤC VỤ Y TẾ")
+print("     SMART MEDICAL KIOSK SYSTEM")
 print("==========================================")
 
-Name = input("Nhập họ và tên bệnh nhân (Ví dụ: Nguyen Van A): ")
-patientID = input("Nhập mã bệnh nhân (Ví dụ: BN1024): ")
-temperature = input("Nhập nhiệt độ cơ thể dạng số thập phân (Ví dụ: 37.5): ")
-heartRate = input("Nhập nhịp tim dạng số nguyên (Ví dụ: 85): ")
-weight = input("Nhập cân nặng dạng số thập phân (Ví dụ: 65.5): ")
+# KHỐI THU THẬP DỮ LIỆU
+
+patient_name = input("Nhập họ và tên bệnh nhân (Ví dụ: Nguyen Van A): ")
+patient_age = int(input("Nhập tuổi bệnh nhân dạng số nguyên (Ví dụ: 25): "))
+spo2_level = int(input("Nhập chỉ số SpO2 dạng số nguyên % (Ví dụ: 98): "))
+heart_rate = int(input("Nhập nhịp tim dạng số nguyên bpm (Ví dụ: 75): "))
+has_insurance = input("Bạn có thẻ BHYT không? (Chỉ nhập yes hoặc no): ").lower()
+
+# KHỐI PHÂN LUỒNG Y KHOA
+
+if spo2_level < 90 or heart_rate > 120:
+    triage_result = "RED ALERT - CẤP CỨU KHẨN"
+elif 90 <= spo2_level <= 95 or 100 <= heart_rate <= 120:
+    triage_result = "YELLOW ALERT - THEO DÕI SÁT"
+else:
+    triage_result = "GREEN - KHÁM THƯỜNG"
 
 
-body_temperature = float(temperature)
-heart_rate = int(heartRate)
-body_weight = float(weight)
+# KHỐI TÍNH VIỆN PHÍ
+base_fee = 500000
 
+if patient_age < 6 or patient_age >= 80:
+    hospital_fee = 0
+elif has_insurance == "yes":
+    hospital_fee = 250000
+else:
+    hospital_fee = 500000
 
+# KHỐI HIỂN THỊ PHIẾU KHÁM
 print("\n==========================================")
-print("       PHIẾU KHÁM BỆNH ĐIỆN TỬ")
+print("      PHIẾU KHÁM BỆNH ĐIỆN TỬ")
 print("==========================================")
-
-print("Mã bệnh nhân: ", patientID)
-print("Họ tên      :", Name)
-print("Nhiệt độ    :", body_temperature, "độ C")
-print("Nhịp tim    :", heart_rate, "nhịp/phút")
-print("Cân nặng    :", body_weight, "kg")
-
+print("Họ tên bệnh nhân :", patient_name)
+print("Tuổi             :", patient_age)
+print("SpO2             :", spo2_level, "%")
+print("Nhịp tim         :", heart_rate, "bpm")
+print("Có BHYT          :", has_insurance)
 print("------------------------------------------")
-print("Trạng thái   : Dữ liệu hợp lệ")
+print("KẾT QUẢ PHÂN LUỒNG:")
+print(triage_result)
+print("------------------------------------------")
+print("TẠM ỨNG VIỆN PHÍ:")
+print(format(hospital_fee, ","), "VNĐ")
+
 print("==========================================")
 
-print("\n========== SYSTEM LOG ==========")
+# KHỐI LOG HỆ THỐNG
+print("\n============= SYSTEM LOG =============")
 
-print("body_temperature =", type(body_temperature))
-print("heart_rate       =", type(heart_rate))
-print("body_weight      =", type(body_weight))
+print("patient_name   =", type(patient_name))
+print("patient_age    =", type(patient_age))
+print("spo2_level     =", type(spo2_level))
+print("heart_rate     =", type(heart_rate))
+print("has_insurance  =", type(has_insurance))
