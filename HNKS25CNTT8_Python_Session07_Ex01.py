@@ -1,16 +1,26 @@
 # 1 Phân tích lỗi
-# String trong Python là immutable (bất biến).
-# Các hàm strip(), title(), upper(), lower() không thay đổi chuỗi gốc, mà trả về một chuỗi mới.
-# Trong code hiện tại, lập trình viên chỉ gọi hàm mà không gán lại kết quả, nên dữ liệu không thay đổi.
+# Sau delivery_orders.insert(0, "GE000"):
 
-student_name = "  nguYEn vAn a  "
-student_code = "  rk-001-python  "
-email = "  Student01@GMAIL.COM  "
+# delivery_orders[1] = "GE002-UPDATED" sửa sai vì sau khi chèn "GE000" vào đầu, index 1 là "GE001"
 
-student_name = student_name.strip().title()
-student_code = student_code.strip().upper()
-email = email.strip().lower()
+# Sau khi chèn "GE000", "GE002" nằm ở index 2
+# delivery_orders.remove(3) gây lỗi vì remove() xóa theo giá trị, không phải theo vị trí. Trong danh sách không có phần tử 3.
+# Muốn xóa "GE003-CANCEL":
 
-print("Họ tên:", student_name)
-print("Mã học viên:", student_code)
-print("Email:", email)
+# delivery_orders.remove("GE003-CANCEL")
+
+# pop() xóa phần tử khỏi danh sách và trả về phần tử vừa xóa
+# Chương trình lỗi khi in transferred_order vì biến này chưa được tạo.
+# Muốn lưu đơn hàng vừa lấy ra:
+
+# transferred_order = delivery_orders.pop()
+
+delivery_orders = ["GE001", "GE002", "GE003-CANCEL"]
+delivery_orders.append("GE004")
+delivery_orders.insert(0, "GE000")
+delivery_orders[2] = "GE002-UPDATED"
+delivery_orders.remove("GE003-CANCEL")
+transferred_order = delivery_orders.pop()
+
+print("Danh sách đơn hàng còn lại:", delivery_orders)
+print("Đơn hàng được bàn giao:", transferred_order)

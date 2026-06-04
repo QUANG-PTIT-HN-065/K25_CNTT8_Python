@@ -1,23 +1,42 @@
 # 1 Phân tích lỗi
-# transaction.strip() không làm thay đổi chuỗi gốc vì string trong Python là bất biến, cần gán lại kết quả.
-# Chuỗi giao dịch được phân tách bằng ký tự |.
-# transaction.split("-") sai vì - không phải dấu phân cách giữa các trường dữ liệu.
-# Tách bằng - làm dữ liệu trong parts bị sai vị trí, không lấy đúng tên, mã khóa học, số tiền và trạng thái.
-# Cần strip() từng phần sau split() để loại bỏ khoảng trắng thừa.
-# Cần chuyển amount từ chuỗi sang số (int) để định dạng tiền bằng dấu phẩy.
+# Sau:
+# express_orders.insert(0, "GE100-FAST")
 
-transaction = "  nguyEN vAn a | PYTHON-01 | 15000000 | paid  "
+# Danh sách trở thành:
 
-transaction = transaction.strip()
+# ['GE100-FAST', 'GE101', 'GE102-WRONG', 'GE103-CANCEL', 'GE104']
+# Dòng:
+# express_orders[1] = "GE102-UPDATED"
 
-parts = transaction.split("|")
+# sửa nhầm "GE101" vì sau khi insert(0, ...), các phần tử cũ bị dịch sang phải 1 vị trí.
 
-student_name = parts[0].strip().title()
-course_code = parts[1].strip()
-amount = int(parts[2].strip())
-status = parts[3].strip().upper()
+# Sau khi chèn "GE100-FAST", "GE102-WRONG" nằm ở index 2.
+# Dòng:
+# express_orders.pop(3)
 
-print("Học viên:", student_name)
-print("Khóa học:", course_code)
-print("Số tiền:", format(amount, ",") + " VND")
-print("Trạng thái:", status)
+# không phù hợp vì đang xóa theo vị trí, không xóa trực tiếp đơn hàng bị hủy.
+
+# Muốn xóa đúng "GE103-CANCEL":
+# express_orders.remove("GE103-CANCEL")
+# pop() không truyền index sẽ lấy phần tử cuối cùng trong danh sách.
+# Dòng:
+# current_order = express_orders.pop()
+
+# lấy "GE104" thay vì đơn hàng đầu tiên.
+
+# Muốn lấy đơn hàng đầu tiên:
+# current_order = express_orders.pop(0)
+# Cần sửa các dòng:
+# express_orders[1] -> express_orders[2]
+# express_orders.pop(3) -> express_orders.remove("GE103-CANCEL")
+# express_orders.pop() -> express_orders.pop(0)
+
+
+express_orders = ["GE101", "GE102-WRONG", "GE103-CANCEL"]
+express_orders.append("GE104")
+express_orders.insert(0, "GE100-FAST")
+express_orders[2] = "GE102-UPDATED"
+express_orders.remove("GE103-CANCEL")
+current_order = express_orders.pop(0)
+print("Danh sách đơn hàng còn lại:", express_orders)
+print("Đơn hàng đang giao:", current_order)

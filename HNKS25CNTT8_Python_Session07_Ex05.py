@@ -1,155 +1,162 @@
-# 1 Phân tích và thiết kế
-
+# 1) Phân tích và thiết kế giải pháp
 # Input
-# choice: int
-# serial_suffix: str
-# raw_batch: str
-
+# Lựa chọn menu: string
+# Mã đơn hàng: string
 # Output
-# Chuỗi dữ liệu gốc
-# Báo cáo kiểm kê sản phẩm
-# Kết quả tra cứu serial
-# Thông báo lỗi khi nhập sai
+# Danh sách đơn hàng.
+# Thông báo cập nhật trạng thái.
+# Thông báo lỗi khi dữ liệu không hợp lệ.
 # Giải pháp
-# split(";") -> tách từng sản phẩm
-# strip() -> xóa khoảng trắng
-# upper() -> chuẩn hóa mã
-# split("-") -> tách thành 4 phần
-# isdigit() -> kiểm tra serial hợp lệ
-# Dùng try-except xử lý menu
-
+# Sử dụng while True để hiển thị menu.
+# Chuẩn hóa mã đơn hàng bằng strip().upper().
+# Duyệt danh sách bằng enumerate().
+# Tách mã đơn hàng và trạng thái bằng split(" - ").
+# Cập nhật trạng thái bằng cách gán lại phần tử trong List.
+# Kiểm tra luồng trạng thái theo yêu cầu nghiệp vụ.
 # Pseudocode
-# Lặp vô hạn
+# Khởi tạo order_list
+
+# Lặp vô hạn:
 #     Hiển thị menu
-
-#     Nhập lựa chọn
-
-#     Nếu không hợp lệ
+#     Nếu chọn 1:
+#         Hiển thị danh sách đơn hàng
+#     Nếu chọn 2:
+#         Nhập mã đơn hàng
+#         Tìm đơn hàng
+#         Nếu trạng thái PENDING:
+#             Chuyển thành ASSIGNED
+#         Ngược lại:
+#             Thông báo lỗi
+#     Nếu chọn 3:
+#         Nhập mã đơn hàng
+#         Tìm đơn hàng
+#         ASSIGNED -> DELIVERING
+#         DELIVERING -> COMPLETED
+#         Các trạng thái khác:
+#             Thông báo phù hợp
+#     Nếu chọn 4:
+#         Nhập mã đơn hàng
+#         Tìm đơn hàng
+#         Nếu PENDING hoặc ASSIGNED:
+#             Chuyển thành CANCELLED
+#         Ngược lại:
+#             Thông báo phù hợp
+#     Nếu chọn 5:
+#         Thoát
+#     Ngược lại:
 #         Báo lỗi
 
-#     Nếu chọn 1
-#         In dữ liệu gốc
-
-#     Nếu chọn 2
-#         Tách và chuẩn hóa dữ liệu
-#         Kiểm tra serial
-#         In báo cáo
-#         In tổng kết
-
-#     Nếu chọn 3
-#         Nhập đuôi serial
-#         Tìm sản phẩm phù hợp
-#         In kết quả
-
-#     Nếu chọn 4
-#         Thoát chương trình
-
-raw_batch = (
-    " LAP-VN-23-001 ; mou-us-24-012 ; KEY-vn-23-abc ; lap-JP-22-045 ; MOn-vn-24-099 "
-)
-
-
-def get_product_list():
-    product_list = []
-
-    for product in raw_batch.split(";"):
-        product = product.strip().upper()
-
-        parts = product.split("-")
-
-        product_code = parts[0]
-        country = parts[1]
-        year = "20" + parts[2]
-        serial = parts[3]
-
-        if serial.isdigit():
-            status = "Pass"
-        else:
-            status = "Lỗi Serial - Reject"
-
-        product_list.append(
-            {
-                "code": product_code,
-                "country": country,
-                "year": year,
-                "serial": serial,
-                "status": status,
-            }
-        )
-
-    return product_list
-
+# Danh sách đơn hàng ban đầu
+order_list = [
+    "GE001 - PENDING",
+    "GE002 - ASSIGNED",
+    "GE003 - DELIVERING"
+]
 
 while True:
-    print("\n===== HỆ THỐNG GIẢI MÃ DỮ LIỆU KHO HÀNG =====")
-    print("1. Hiển thị chuỗi mã vạch gốc")
-    print("2. Giải mã, làm sạch và in báo cáo kiểm kê")
-    print("3. Tra cứu nhanh theo đuôi Serial")
-    print("4. Thoát chương trình")
+    print("\n===== HỆ THỐNG ĐIỀU PHỐI GRAB EXPRESS =====")
+    print("1. Hiển thị danh sách đơn hàng")
+    print("2. Gán tài xế cho đơn hàng")
+    print("3. Cập nhật trạng thái giao hàng")
+    print("4. Hủy đơn hàng")
+    print("5. Thoát chương trình")
 
-    try:
-        choice = int(input("Nhập lựa chọn của bạn (1-4): "))
+    choice = input("Nhập lựa chọn: ").strip()
 
-        if choice < 1 or choice > 4:
-            print("Chức năng không tồn tại, vui lòng nhập số từ 1-4!")
-            continue
+    if choice == "1":
+        if len(order_list) == 0:
+            print("Danh sách đơn hàng hiện đang trống.")
+        else:
+            print("Danh sách đơn hàng hiện tại:")
+            for index, order in enumerate(order_list, start=1):
+                print(f"{index}. {order}")
 
-    except ValueError:
-        print("Chức năng không tồn tại, vui lòng nhập số từ 1-4!")
-        continue
-
-    if choice == 1:
-        print(raw_batch)
-
-    elif choice == 2:
-        product_list = get_product_list()
-
-        valid_count = 0
-
-        print(
-            f"\n{'MÃ SP':<10}"
-            f"{'XUẤT XỨ':<10}"
-            f"{'NĂM SX':<10}"
-            f"{'SERIAL':<10}"
-            f"{'TRẠNG THÁI'}"
-        )
-
-        for product in product_list:
-            print(
-                f"{product['code']:<10}"
-                f"{product['country']:<10}"
-                f"{product['year']:<10}"
-                f"{product['serial']:<10}"
-                f"{product['status']}"
-            )
-
-            if product["status"] == "Pass":
-                valid_count += 1
-
-        print(
-            f"\nĐã giải mã thành công {valid_count} sản phẩm hợp lệ / Tổng số {len(product_list)} sản phẩm."
-        )
-
-    elif choice == 3:
-        serial_suffix = input("Nhập 2 số cuối của Serial: ").strip()
-
-        product_list = get_product_list()
+    elif choice == "2":
+        order_code = input("Nhập mã đơn hàng: ").strip().upper()
 
         found = False
 
-        for product in product_list:
-            if product["serial"][-2:] == serial_suffix:
-                print("\nThông tin sản phẩm:")
-                print("Mã SP:", product["code"])
-                print("Xuất xứ:", product["country"])
-                print("Năm SX:", product["year"])
-                print("Serial:", product["serial"])
-                print("Trạng thái:", product["status"])
+        for index, order in enumerate(order_list):
+            code, status = order.split(" - ")
+
+            if code == order_code:
                 found = True
 
+                if status == "PENDING":
+                    order_list[index] = f"{code} - ASSIGNED"
+                    print("Gán tài xế thành công!")
+                else:
+                    print("Chỉ có thể gán tài xế cho đơn hàng đang chờ xử lý.")
+                break
+
         if not found:
-            print("Không tìm thấy sản phẩm phù hợp")
+            print("Không tìm thấy mã đơn hàng.")
+
+    elif choice == "3":
+        order_code = input("Nhập mã đơn hàng: ").strip().upper()
+
+        found = False
+
+        for index, order in enumerate(order_list):
+            code, status = order.split(" - ")
+
+            if code == order_code:
+                found = True
+
+                if status == "ASSIGNED":
+                    order_list[index] = f"{code} - DELIVERING"
+                    print("Cập nhật trạng thái thành DELIVERING.")
+
+                elif status == "DELIVERING":
+                    order_list[index] = f"{code} - COMPLETED"
+                    print("Cập nhật trạng thái thành COMPLETED.")
+
+                elif status == "PENDING":
+                    print("Đơn hàng chưa được gán tài xế, không thể chuyển sang trạng thái giao hàng.")
+
+                elif status == "COMPLETED":
+                    print("Đơn hàng đã hoàn tất, không thể cập nhật tiếp.")
+
+                elif status == "CANCELLED":
+                    print("Đơn hàng đã bị hủy, không thể cập nhật.")
+
+                break
+
+        if not found:
+            print("Không tìm thấy mã đơn hàng.")
+
+    elif choice == "4":
+        order_code = input("Nhập mã đơn hàng cần hủy: ").strip().upper()
+
+        found = False
+
+        for index, order in enumerate(order_list):
+            code, status = order.split(" - ")
+
+            if code == order_code:
+                found = True
+
+                if status in ["PENDING", "ASSIGNED"]:
+                    order_list[index] = f"{code} - CANCELLED"
+                    print("Hủy đơn hàng thành công.")
+
+                elif status == "DELIVERING":
+                    print("Đơn hàng đang được giao, không thể hủy.")
+
+                elif status == "COMPLETED":
+                    print("Đơn hàng đã hoàn tất, không thể hủy.")
+
+                elif status == "CANCELLED":
+                    print("Đơn hàng đã được hủy trước đó.")
+
+                break
+
+        if not found:
+            print("Không tìm thấy mã đơn hàng.")
+
+    elif choice == "5":
+        print("Thoát chương trình")
+        break
 
     else:
-        print("Đóng ca kiểm kho. Chào tạm biệt!")
-        break
+        print("Lựa chọn không hợp lệ, vui lòng nhập lại!")

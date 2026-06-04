@@ -1,90 +1,160 @@
-# 1 Phân tích và thiết kế
-
+# 1) Phân tích và thiết kế giải pháp
 # Input
-
-# number_of_forms: int
-# registration_data: str
-
+# Lựa chọn menu: int
+# Mã đơn hàng: string
+# Trạng thái đơn hàng: string
+# Vị trí cần sửa/xóa: int
 # Output
-
-# Thông tin học viên đã chuẩn hóa
-# Mã xác nhận
-# Thông báo lỗi cho dữ liệu không hợp lệ
-
+# Danh sách đơn hàng.
+# Thông báo thêm, sửa, xóa thành công.
+# Báo cáo thống kê theo trạng thái.
+# Thông báo lỗi khi dữ liệu không hợp lệ.
 # Giải pháp
-# split("|") để tách 4 phần dữ liệu
-# strip() để xóa khoảng trắng thừa
-# title() chuẩn hóa họ tên và khóa học
-# upper() chuẩn hóa mã học viên
-# lower() chuẩn hóa email
-# Kiểm tra:
-# Số lượng phiếu > 0
-# Chuỗi có đúng 4 phần
-# Email chứa @
-# Mã học viên có độ dài ≥ 5
-
+# Dùng while True để tạo menu chính và menu con.
+# Dùng append() để thêm đơn hàng.
+# Dùng gán qua index để sửa đơn hàng.
+# Dùng pop(index) để xóa đơn hàng theo vị trí.
+# Dùng strip() và upper() để chuẩn hóa dữ liệu.
+# Dùng split(" - ") để tách trạng thái khi thống kê.
+# Kiểm tra vị trí bằng isdigit() và giới hạn từ 1 đến len(order_list).
 # Pseudocode
-# Nhập số lượng phiếu
+# Khởi tạo order_list
 
-# Nếu số lượng <= 0
-#     Thông báo lỗi
-#     Kết thúc
-
-# Lặp theo số lượng phiếu
-#     Nhập chuỗi đăng ký
-
-#     Tách theo dấu |
-
-#     Nếu không đủ 4 phần
+# Lặp vô hạn:
+#     Hiển thị menu chính
+#     Nhập lựa chọn
+#     Nếu chọn 1:
+#         Hiển thị danh sách
+#     Nếu chọn 2:
+#         Hiển thị menu cập nhật
+#         Nếu thêm:
+#             Nhập mã và trạng thái
+#             Chuẩn hóa
+#             append()
+#         Nếu sửa:
+#             Nhập vị trí
+#             Kiểm tra hợp lệ
+#             Nhập dữ liệu mới
+#             Cập nhật bằng index
+#         Nếu xóa:
+#             Nhập vị trí
+#             Kiểm tra hợp lệ
+#             pop(index)
+#         Nếu quay lại:
+#             Trở về menu chính
+#     Nếu chọn 3:
+#         Thống kê số lượng từng trạng thái
+#     Nếu chọn 4:
+#         Thoát chương trình
+#     Ngược lại:
 #         Báo lỗi
-#         Bỏ qua
 
-#     Chuẩn hóa dữ liệu
+# Danh sách đơn hàng ban đầu
+order_list = ["GE001 - PENDING", "GE002 - DELIVERING", "GE003 - CANCELLED"]
 
-#     Nếu email không chứa @
-#         Báo lỗi
-#         Bỏ qua
+while True:
+    print("\n===== HỆ THỐNG QUẢN LÝ ĐƠN HÀNG GRAB EXPRESS =====")
+    print("1. Hiển thị danh sách đơn hàng")
+    print("2. Cập nhật danh sách đơn hàng")
+    print("3. Thống kê đơn hàng theo trạng thái")
+    print("4. Thoát chương trình")
 
-#     Nếu mã học viên < 5 ký tự
-#         Báo lỗi
-#         Bỏ qua
+    choice = input("Nhập lựa chọn: ").strip()
 
-#     Tạo mã xác nhận
+    if choice == "1":
+        if len(order_list) == 0:
+            print("Danh sách đơn hàng hiện đang trống.")
+        else:
+            print("Danh sách đơn hàng hiện tại:")
+            for index, order in enumerate(order_list, start=1):
+                print(f"{index}. {order}")
 
-#     In thông tin chuẩn hóa
+    elif choice == "2":
+        while True:
+            print("\n----- CẬP NHẬT DANH SÁCH ĐƠN HÀNG -----")
+            print("1. Thêm đơn hàng mới")
+            print("2. Sửa đơn hàng theo vị trí")
+            print("3. Xóa đơn hàng theo vị trí")
+            print("4. Quay lại menu chính")
 
-number_of_forms = int(input("Nhập số lượng phiếu đăng ký: "))
+            sub_choice = input("Nhập lựa chọn: ").strip()
 
-if number_of_forms <= 0:
-    print("Số lượng phiếu đăng ký không hợp lệ")
-else:
-    for i in range(number_of_forms):
-        registration_data = input(f"Nhập phiếu đăng ký {i + 1}: ")
+            if sub_choice == "1":
+                order_code = input("Nhập mã đơn hàng: ").strip().upper()
+                status = input("Nhập trạng thái: ").strip().upper()
 
-        parts = registration_data.split("|")
+                order_list.append(f"{order_code} - {status}")
+                print("Thêm đơn hàng thành công!")
 
-        if len(parts) != 4:
-            print("Dữ liệu đăng ký không hợp lệ. Bỏ qua phiếu này")
-            continue
+            elif sub_choice == "2":
+                position = input("Nhập vị trí cần sửa: ").strip()
 
-        student_name = parts[0].strip().title()
-        course_name = parts[1].strip().title()
-        student_code = parts[2].strip().upper()
-        email = parts[3].strip().lower()
+                if not position.isdigit():
+                    print("Vị trí không hợp lệ!")
+                    continue
 
-        if "@" not in email:
-            print("Email không hợp lệ. Bỏ qua phiếu này")
-            continue
+                position = int(position)
 
-        if len(student_code) < 5:
-            print("Mã học viên không hợp lệ. Bỏ qua phiếu này")
-            continue
+                if position < 1 or position > len(order_list):
+                    print("Không tồn tại đơn hàng ở vị trí này!")
+                    continue
 
-        confirmation_code = student_code + "_" + course_name.upper().replace(" ", "-")
+                order_code = input("Nhập mã đơn hàng mới: ").strip().upper()
+                status = input("Nhập trạng thái mới: ").strip().upper()
 
-        print("\n===== PHIẾU ĐĂNG KÝ ĐÃ CHUẨN HÓA =====")
-        print("Học viên:", student_name)
-        print("Khóa học:", course_name)
-        print("Mã học viên:", student_code)
-        print("Email:", email)
-        print("Mã xác nhận:", confirmation_code)
+                order_list[position - 1] = f"{order_code} - {status}"
+                print("Cập nhật thành công!")
+
+            elif sub_choice == "3":
+                position = input("Nhập vị trí cần xóa: ").strip()
+
+                if not position.isdigit():
+                    print("Vị trí không hợp lệ!")
+                    continue
+
+                position = int(position)
+
+                if position < 1 or position > len(order_list):
+                    print("Không tồn tại đơn hàng ở vị trí này!")
+                    continue
+
+                deleted_order = order_list.pop(position - 1)
+                print("Đã xóa:", deleted_order)
+
+            elif sub_choice == "4":
+                break
+
+            else:
+                print("Lựa chọn không hợp lệ, vui lòng nhập lại!")
+
+    elif choice == "3":
+        pending_count = 0
+        delivering_count = 0
+        completed_count = 0
+        cancelled_count = 0
+
+        for order in order_list:
+            status = order.split(" - ")[1]
+
+            if status == "PENDING":
+                pending_count += 1
+            elif status == "DELIVERING":
+                delivering_count += 1
+            elif status == "COMPLETED":
+                completed_count += 1
+            elif status == "CANCELLED":
+                cancelled_count += 1
+
+        print("\n===== THỐNG KÊ ĐƠN HÀNG =====")
+        print(f"PENDING: {pending_count}")
+        print(f"DELIVERING: {delivering_count}")
+        print(f"COMPLETED: {completed_count}")
+        print(f"CANCELLED: {cancelled_count}")
+        print(f"Tổng số đơn hàng: {len(order_list)}")
+
+    elif choice == "4":
+        print("Thoát chương trình")
+        break
+
+    else:
+        print("Lựa chọn không hợp lệ, vui lòng nhập lại!")
