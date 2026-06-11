@@ -1,77 +1,266 @@
-# 1) Phân tích lỗi
-# Câu 1
+# 1) Phân tích và thiết kế
+# Biến Global
+# inventory_stock = 100
+# total_revenue = 0.0
+# inventory_stock: Lưu số lượng hàng tồn kho.
+# total_revenue: Lưu tổng doanh thu.
 
-# Hàm được định nghĩa:
+# Hai biến này được sử dụng và cập nhật ở nhiều hàm nên phải khai báo toàn cục.
 
-# def calculate_final_price(price, discount, shipping_fee):
+# Biến Local
 
-# Lời gọi:
+# Trong các hàm:
 
-# calculate_final_price(100000, 15000, 0.1)
-# price = 100000
-# discount = 15000
-# shipping_fee = 0.1
-# Câu 2
+# amount
+# quantity
+# price
+# subtotal
+# discount
+# vat
+# final_total
 
-# Công thức thực tế đang tính:
+# Các biến này chỉ tồn tại trong phạm vi hàm nên là biến cục bộ.
 
-# 100000 - (100000 * 15000) + 0.1
+# Hàm add_stock(amount)
 
-# Kết quả:
+# Input:
 
-# 100000 - 1500000000 + 0.1
-# = -1499900000 + 0.1
-# = -1499899999.9
+# amount (int)
 
-# Do 15000 bị gán nhầm vào discount nên phép nhân:
+# Output:
 
-# 100000 * 15000
+# Không trả về giá trị.
 
-# tạo ra giá trị rất lớn làm kết quả bị âm.
+# Chức năng:
 
-# Câu 3
+# Cộng thêm hàng vào inventory_stock.
+# Hàm process_sale(quantity)
 
-# Dòng:
+# Input:
 
-# final_payment = order_total + 5000
+# quantity (int)
 
-# gây lỗi vì order_total có giá trị None, không thể cộng với số nguyên.
+# Output:
 
-# Câu 4
+# True nếu đủ hàng.
+# False nếu không đủ hàng.
 
-# Biến order_total mang giá trị:
+# Chức năng:
 
-# None
+# Kiểm tra tồn kho trước khi bán.
+# Hàm calculate_final_price(quantity, price)
 
-# Vì hàm không có lệnh return, Python tự động trả về None
+# Input:
 
-# Câu 5
-# print(total)
-# Chỉ hiển thị kết quả ra màn hình
-# Không trả kết quả cho nơi gọi hàm
-# return total
-# Trả kết quả về cho nơi gọi hàm
-# Có thể lưu vào biến và tiếp tục tính toán
-# Câu 6
+# quantity (int)
+# price (float)
 
-# Cần sửa:
+# Output:
 
-# return total
+# subtotal
+# discount
+# vat
+# final_total
 
-# thay cho:
+# Chức năng:
 
-# print("Đã tính xong tổng tiền:", total)
+# Tính tiền hàng.
+# Giảm giá 10% nếu đủ điều kiện.
+# Tính VAT 8%.
+# Trả về kết quả.
+# Hàm print_report()
 
-# để order_total nhận được kết quả tính toán
+# Input:
+
+# Không có.
+
+# Output:
+
+# Không trả về giá trị.
+
+# Chức năng:
+
+# Hiển thị tồn kho.
+# Hiển thị doanh thu.
+
+inventory_stock = 100
+total_revenue = 0.0
 
 
-def calculate_final_price(price, discount, shipping_fee):
-    total = price - (price * discount) + shipping_fee
-    return total
+def add_stock(amount):
+    """
+    Thêm sản phẩm vào kho.
+
+    Parameters:
+        amount (int): Số lượng cần nhập thêm.
+
+    Returns:
+        None
+    """
+    global inventory_stock
+
+    inventory_stock += amount
+
+    print(f"Đã nhập thành công {amount} sản phẩm.")
+    print(f"Tồn kho hiện tại: {inventory_stock}")
 
 
-order_total = calculate_final_price(100000, 0.1, 15000)
+def process_sale(quantity):
+    """
+    Kiểm tra tồn kho trước khi bán.
 
-final_payment = order_total + 5000
+    Parameters:
+        quantity (int): Số lượng khách muốn mua.
 
-print("Khách hàng cần thanh toán:", final_payment)
+    Returns:
+        bool: True nếu đủ hàng, False nếu không đủ hàng.
+    """
+    if quantity > inventory_stock:
+        print(
+            f"Lỗi: Không đủ hàng trong kho. "
+            f"Tồn kho hiện tại chỉ còn {inventory_stock}."
+        )
+        return False
+
+    return True
+
+
+def calculate_final_price(quantity, price):
+    """
+    Tính hóa đơn cuối cùng.
+
+    Parameters:
+        quantity (int): Số lượng mua.
+        price (float): Đơn giá.
+
+    Returns:
+        tuple: (subtotal, discount, vat, final_total)
+    """
+
+    subtotal = quantity * price
+
+    discount = 0
+
+    if subtotal >= 1000:
+        discount = subtotal * 0.10
+
+    after_discount = subtotal - discount
+
+    vat = after_discount * 0.08
+
+    final_total = after_discount + vat
+
+    return subtotal, discount, vat, final_total
+
+
+def print_report():
+    """
+    Hiển thị báo cáo tổng quan của hệ thống.
+
+    Bao gồm:
+    - Số lượng hàng tồn kho hiện tại.
+    - Tổng doanh thu đã ghi nhận.
+    """
+
+    print("\n--- BÁO CÁO KINH DOANH ---")
+    print(f"Tồn kho hiện tại: {inventory_stock} sản phẩm")
+    print(f"Tổng doanh thu: ${total_revenue}")
+    print("--------------------------")
+
+
+def input_positive_int(message):
+    while True:
+        try:
+            value = int(input(message))
+
+            if value <= 0:
+                print("Dữ liệu nhập vào phải lớn hơn 0.")
+                continue
+
+            return value
+
+        except ValueError:
+            print("Vui lòng nhập đúng kiểu dữ liệu số.")
+
+
+def input_positive_float(message):
+    while True:
+        try:
+            value = float(input(message))
+
+            if value <= 0:
+                print("Dữ liệu nhập vào phải lớn hơn 0.")
+                continue
+
+            return value
+
+        except ValueError:
+            print("Vui lòng nhập đúng kiểu dữ liệu số.")
+
+
+def main():
+    global inventory_stock
+    global total_revenue
+
+    while True:
+
+        print("\n========== TECHSTORE MANAGEMENT SYSTEM ==========")
+        print("1. Nhập thêm hàng vào kho")
+        print("2. Bán hàng (Tính toán hóa đơn)")
+        print("3. Xem báo cáo tổng quan")
+        print("4. Thoát chương trình")
+        print("=================================================")
+
+        choice = input("Chọn chức năng (1-4): ")
+
+        if choice == "1":
+
+            print("\n--- NHẬP HÀNG ---")
+
+            amount = input_positive_int("Nhập số lượng sản phẩm muốn thêm: ")
+
+            add_stock(amount)
+
+        elif choice == "2":
+
+            print("\n--- BÁN HÀNG ---")
+
+            quantity = input_positive_int("Nhập số lượng mua: ")
+
+            price = input_positive_float("Nhập đơn giá ($): ")
+
+            if not process_sale(quantity):
+                continue
+
+            subtotal, discount, vat, final_total = calculate_final_price(
+                quantity, price
+            )
+
+            inventory_stock -= quantity
+            total_revenue += final_total
+
+            print("-> Hóa đơn chi tiết:")
+            print(f"Số lượng: {quantity} | " f"Đơn giá: ${price}")
+            print(f"Tạm tính: ${subtotal}")
+            print(f"Giảm giá (10%): ${discount}")
+            print(f"Thuế VAT (8%): ${vat}")
+            print(f"Tổng thanh toán: ${final_total}")
+            print("Đã bán thành công!")
+
+        elif choice == "3":
+
+            print_report()
+
+        elif choice == "4":
+
+            print("Lưu dữ liệu thành công.")
+            print("Thoát chương trình.")
+            break
+
+        else:
+
+            print("Lựa chọn không hợp lệ.")
+
+
+if __name__ == "__main__":
+    main()

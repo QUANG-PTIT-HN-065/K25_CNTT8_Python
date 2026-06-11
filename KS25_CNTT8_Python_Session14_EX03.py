@@ -1,260 +1,287 @@
-# 1) Phân tích và thiết kế giải pháp
-# 1. Hàm validate_score(score_input)
+# 1) Phân tích và thiết kế
+# Luồng dữ liệu (Pseudo-code)
+# Người dùng nhập:
+#     số lượng vé
+#     hạng vé
 
-# Input:
+# ↓
+# calculate_ticket_cost(quantity, ticket_class)
 
-# score_input (str)
+#     tính giá vé theo hạng
+#     tính tạm tính
+#     tính phí dịch vụ 5%
+#     tính tổng thanh toán
 
-# Output:
+#     return subtotal, service_fee, final_total
 
-# True nếu điểm hợp lệ.
-# False nếu điểm không hợp lệ.
-# 2. Hàm find_student_by_id(student_list, student_id)
+# ↓
 
-# Input:
+# book_flight(quantity, final_total)
 
-# student_list (list)
-# student_id (str)
+#     kiểm tra ghế trống
 
-# Output:
+#     nếu không đủ ghế
+#         báo lỗi
 
-# Trả về vị trí (index) của học viên nếu tìm thấy.
-# Trả về -1 nếu không tìm thấy.
-# 3. Hàm display_students(student_list)
+#     nếu đủ ghế
+#         available_seats -= quantity
+#         flight_revenue += final_total
 
-# Input:
+# ↓
 
-# student_list (list)
+# In vé xác nhận
+# Tính toàn vẹn dữ liệu
+# Biến toàn cục
+# available_seats = 50
+# flight_revenue = 0.0
+# BASE_PRICE = 2000.0
+# available_seats lưu trạng thái ghế của chuyến bay.
+# flight_revenue lưu tổng doanh thu toàn bộ hệ thống.
+# BASE_PRICE là hằng số giá vé cơ bản.
+# Vì sao flight_revenue phải là biến toàn cục?
+# Doanh thu được thay đổi ở nhiều giao dịch đặt vé và hủy vé.
+# Mọi hàm phải cập nhật cùng một giá trị doanh thu chung.
+# Nếu dùng biến cục bộ, mỗi hàm sẽ tạo bản sao riêng làm dữ liệu không đồng bộ.
+# Hàm calculate_ticket_cost()
 
-# Output:
+# Input
 
-# Không trả về dữ liệu.
-# Hiển thị danh sách học viên.
-# 4. Hàm add_student(student_list)
+# quantity (int)
+# ticket_class (int)
 
-# Input:
+# Output
 
-# student_list (list)
+# subtotal (float)
+# service_fee (float)
+# final_total (float)
+# Hàm book_flight()
 
-# Output:
+# Input
 
-# Không trả về dữ liệu.
-# Thêm học viên mới vào danh sách.
-# 5. Hàm update_score(student_list)
+# quantity (int)
+# final_total (float)
 
-# Input:
+# Output
 
-# student_list (list)
+# True / False
+# Hàm cancel_booking()
 
-# Output:
+# Input
 
-# Không trả về dữ liệu.
-# Cập nhật điểm học viên.
-# 6. Hàm get_rank(average_score)
+# quantity (int)
 
-# Input:
+# Output
 
-# average_score (float)
+# refund_amount (float)
+# Hàm print_flight_report()
 
-# Output:
+# Input
 
-# "Giỏi"
-# "Khá"
-# "Trung bình"
-# "Yếu"
-# 7. Hàm evaluate_students(student_list)
+# Không có
 
-# Input:
+# Output
 
-# student_list (list)
+# Không trả về giá trị
 
-# Output:
-
-# Không trả về dữ liệu.
-# Hiển thị kết quả đánh giá học lực.
-# Lý do tách thành nhiều hàm
-# Dễ đọc và dễ bảo trì.
-# Dễ kiểm tra và sửa lỗi.
-# Tái sử dụng được logic.
-# Tránh lặp code.
-# Dễ mở rộng chức năng sau này.
-
-students = [
-    {
-        "student_id": "RA001",
-        "name": "Nguyễn Văn A",
-        "math_score": 8.5,
-        "english_score": 7.0,
-    },
-    {
-        "student_id": "RA002",
-        "name": "Trần Thị B",
-        "math_score": 9.0,
-        "english_score": 9.5,
-    },
-]
+available_seats = 50
+flight_revenue = 0.0
+BASE_PRICE = 2000.0
+MAX_SEATS = 50
 
 
-def display_menu():
-    """Hiển thị menu"""
-    print("\n===== HỆ THỐNG QUẢN LÝ ĐIỂM THI RIKKEI ACADEMY =====")
-    print("1. Hiển thị danh sách học viên")
-    print("2. Thêm học viên mới")
-    print("3. Cập nhật điểm thi theo mã học viên")
-    print("4. Đánh giá học lực của toàn bộ học viên")
-    print("5. Thoát chương trình")
+def calculate_ticket_cost(quantity, ticket_class):
+    """
+    Tính tổng chi phí đặt vé.
+
+    Parameters:
+        quantity (int): Số lượng vé.
+        ticket_class (int): 1 = Economy, 2 = Business.
+
+    Returns:
+        tuple[float, float, float]:
+        (subtotal, service_fee, final_total)
+    """
+
+    if ticket_class == 1:
+        ticket_price = BASE_PRICE
+    else:
+        ticket_price = BASE_PRICE * 1.5
+
+    subtotal = quantity * ticket_price
+    service_fee = subtotal * 0.05
+    final_total = subtotal + service_fee
+
+    return subtotal, service_fee, final_total
 
 
-def validate_score(score_input):
-    """Kiểm tra điểm hợp lệ"""
-    try:
-        score = float(score_input)
-        return 0 <= score <= 10
-    except ValueError:
+def book_flight(quantity, final_total):
+    """
+    Xử lý đặt vé và cập nhật doanh thu.
+
+    Returns:
+        bool
+    """
+
+    global available_seats
+    global flight_revenue
+
+    if quantity > available_seats:
+        print(f"Rất tiếc, chuyến bay chỉ còn " f"{available_seats} chỗ trống.")
         return False
 
+    available_seats -= quantity
+    flight_revenue += final_total
 
-def input_score(message):
-    """Nhập điểm hợp lệ"""
+    return True
+
+
+def cancel_booking(quantity):
+    """
+    Hủy vé và hoàn tiền.
+
+    Returns:
+        float | None
+    """
+
+    global available_seats
+    global flight_revenue
+
+    if available_seats + quantity > MAX_SEATS:
+        print("Lỗi: Số lượng vé hủy vượt quá " "số vé đã bán ra.")
+        return None
+
+    refund_amount = quantity * BASE_PRICE * 0.8
+
+    available_seats += quantity
+    flight_revenue -= refund_amount
+
+    if flight_revenue < 0:
+        flight_revenue = 0
+
+    return refund_amount
+
+
+def print_flight_report():
+    """
+    Hiển thị báo cáo chuyến bay VN2026.
+
+    Nội dung:
+    - Sức chứa tối đa
+    - Ghế đã đặt
+    - Ghế trống
+    - Tổng doanh thu hiện tại
+    """
+
+    booked_seats = MAX_SEATS - available_seats
+
+    print("\n--- TÌNH TRẠNG CHUYẾN BAY VN2026 ---")
+    print(f"Sức chứa tối đa: {MAX_SEATS}")
+    print(f"Ghế đã đặt: {booked_seats}")
+    print(f"Ghế trống: {available_seats}")
+    print(f"Tổng doanh thu hiện tại: ${flight_revenue}")
+    print("------------------------------------")
+
+
+def input_positive_int(message):
+
     while True:
-        score_input = input(message)
+        try:
+            value = int(input(message))
 
-        if validate_score(score_input):
-            return float(score_input)
+            if value <= 0:
+                print("Dữ liệu không hợp lệ.")
+                continue
 
-        print("Điểm không hợp lệ, phải là số từ 0 đến 10")
+            return value
 
-
-def find_student_by_id(student_list, student_id):
-    """Tìm học viên theo mã"""
-    for index, student in enumerate(student_list):
-        if student["student_id"] == student_id:
-            return index
-    return -1
+        except ValueError:
+            print("Dữ liệu không hợp lệ.")
 
 
-def display_students(student_list):
-    """Hiển thị danh sách học viên"""
-    if not student_list:
-        print("Danh sách học viên hiện đang trống.")
-        return
-
-    for index, student in enumerate(student_list, start=1):
-        print(
-            f"{index}. Mã: {student['student_id']} | "
-            f"Tên: {student['name']} | "
-            f"Toán: {student['math_score']} | "
-            f"Anh: {student['english_score']}"
-        )
-
-
-def add_student(student_list):
-    """Thêm học viên mới"""
+def input_ticket_class():
 
     while True:
-        student_id = input("Nhập mã học viên: ").strip().upper()
 
-        if find_student_by_id(student_list, student_id) != -1:
-            print("Mã học viên đã tồn tại, vui lòng nhập mã khác!")
+        ticket_class = input("Chọn hạng vé (1: Economy, 2: Business): ")
+
+        if ticket_class in ("1", "2"):
+            return int(ticket_class)
+
+        print("Hạng vé không hợp lệ.")
+
+
+def main():
+
+    while True:
+
+        print("\n============= SKYBOOKING SYSTEM =============")
+        print("Chuyến bay: VN2026 | Khởi hành: Hà Nội")
+        print("1. Đặt vé máy bay")
+        print("2. Hủy vé & Hoàn tiền")
+        print("3. Xem tình trạng chuyến bay")
+        print("4. Đóng hệ thống")
+        print("=============================================")
+
+        choice = input("Chọn chức năng (1-4): ").strip()
+
+        if choice == "1":
+
+            print("\n--- ĐẶT VÉ MÁY BAY ---")
+
+            quantity = input_positive_int("Nhập số lượng vé: ")
+
+            ticket_class = input_ticket_class()
+
+            subtotal, service_fee, final_total = calculate_ticket_cost(
+                quantity, ticket_class
+            )
+
+            if book_flight(quantity, final_total):
+
+                ticket_name = "Economy" if ticket_class == 1 else "Business"
+
+                print("-> Xác nhận đặt chỗ:")
+                print(f"Số lượng: {quantity} | " f"Hạng: {ticket_name}")
+                print(f"Tạm tính: ${subtotal}")
+                print(f"Phí dịch vụ (5%): " f"${service_fee}")
+                print(f"Tổng thanh toán: " f"${final_total}")
+                print(
+                    f"Đặt vé thành công! " f"Ghế trống còn lại: " f"{available_seats}"
+                )
+
+        elif choice == "2":
+
+            print("\n--- HỦY VÉ & HOÀN TIỀN ---")
+
+            quantity = input_positive_int("Nhập số lượng vé muốn hủy: ")
+
+            refund_amount = cancel_booking(quantity)
+
+            if refund_amount is not None:
+
+                print(
+                    f"Hủy vé thành công. "
+                    f"Hệ thống đã hoàn lại: "
+                    f"${refund_amount} "
+                    f"(80% giá cơ bản)."
+                )
+
+                print(f"Ghế trống hiện tại: " f"{available_seats}")
+
+        elif choice == "3":
+
+            print_flight_report()
+
+        elif choice == "4":
+
+            print("Đóng hệ thống thành công.")
+            print("Cảm ơn bạn đã sử dụng SkyBooking!")
+            break
+
         else:
-            break
 
-    while True:
-        name = input("Nhập tên học viên: ").strip()
-
-        if name:
-            name = name.title()
-            break
-
-        print("Tên học viên không được để trống!")
-
-    math_score = input_score("Nhập điểm Toán: ")
-    english_score = input_score("Nhập điểm Anh: ")
-
-    student = {
-        "student_id": student_id,
-        "name": name,
-        "math_score": math_score,
-        "english_score": english_score,
-    }
-
-    student_list.append(student)
-
-    print("Thêm học viên thành công!")
+            print("Lựa chọn không hợp lệ.")
 
 
-def update_score(student_list):
-    """Cập nhật điểm học viên"""
-
-    student_id = input("Nhập mã học viên cần cập nhật: ").strip().upper()
-
-    index = find_student_by_id(student_list, student_id)
-
-    if index == -1:
-        print(f"Không tìm thấy học viên mang mã {student_id}!")
-        return
-
-    math_score = input_score("Nhập điểm Toán mới: ")
-    english_score = input_score("Nhập điểm Anh mới: ")
-
-    student_list[index]["math_score"] = math_score
-    student_list[index]["english_score"] = english_score
-
-    print("Cập nhật điểm thành công!")
-
-
-def get_rank(average_score):
-    """Xếp loại học lực"""
-
-    if average_score >= 8:
-        return "Giỏi"
-    elif average_score >= 6.5:
-        return "Khá"
-    elif average_score >= 5:
-        return "Trung bình"
-    else:
-        return "Yếu"
-
-
-def evaluate_students(student_list):
-    """Đánh giá học lực"""
-
-    if not student_list:
-        print("Danh sách học viên hiện đang trống.")
-        return
-
-    for student in student_list:
-        average = (student["math_score"] + student["english_score"]) / 2
-        rank = get_rank(average)
-
-        print(
-            f"Mã: {student['student_id']} | "
-            f"Tên: {student['name']} | "
-            f"ĐTB: {average:.2f} | "
-            f"Xếp loại: {rank}"
-        )
-
-
-while True:
-    display_menu()
-
-    choice = input("Nhập lựa chọn: ").strip()
-
-    if choice == "1":
-        display_students(students)
-
-    elif choice == "2":
-        add_student(students)
-
-    elif choice == "3":
-        update_score(students)
-
-    elif choice == "4":
-        evaluate_students(students)
-
-    elif choice == "5":
-        print("Cảm ơn bạn đã sử dụng hệ thống!")
-        break
-
-    else:
-        print("Lựa chọn không hợp lệ, vui lòng nhập lại!")
+if __name__ == "__main__":
+    main()
