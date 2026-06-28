@@ -1,80 +1,60 @@
 """
-1) Phân tích lỗi
+(1) Phân tích lỗi
 
 Câu 1:
-order_table1.total_amount = 0 vi phạm tính Đóng gói (Encapsulation).
+
+Lỗi vì Warrior.__init__() không gọi hàm khởi tạo của lớp cha nên các thuộc tính name, hp, attack_power không được tạo.
+Thiếu:
+super().__init__(name, hp, attack_power)
 
 Câu 2:
-Đổi:
+Có thể gọi trực tiếp:
 
-self.total_amount
-
-thành:
-
-self.__total_amount
-
-để kích hoạt Name Mangling.
+Character.__init__(self, name, hp, attack_power)
 
 Câu 3:
-Dùng decorator:
 
-@property
-
-để chỉ cho phép đọc.
+Lỗi:
+TypeError
+Vì Python không biết cách so sánh hai đối tượng Warrior bằng toán tử > nếu chưa định nghĩa.
 
 Câu 4:
-Dòng:
+Cần thêm:
 
-self.vat_rate = new_rate
-
-không sửa biến class mà tạo ra biến instance vat_rate riêng cho đối tượng hiện tại.
-
-Câu 5:
-Dùng:
-
-@classmethod
-
-và thay self bằng:
-
-cls
+__gt__(self, other)
+Nhận 2 tham số: self và other.
 
 """
 
-class CoffeeOrder:
-    vat_rate = 0.10
 
-    def __init__(self, table_number):
-        self.table_number = table_number
-        self.__total_amount = 0
-
-    def add_item(self, price):
-        if price > 0:
-            self.__total_amount += price
-
-    @property
-    def total_amount(self):
-        return self.__total_amount
-
-    def calculate_final_bill(self):
-        return self.__total_amount * (1 + CoffeeOrder.vat_rate)
-
-    @classmethod
-    def update_vat_rate(cls, new_rate):
-        cls.vat_rate = new_rate
+# Lớp cha
+class Character:
+    def __init__(self, name, hp, attack_power):
+        self.name = name
+        self.hp = hp
+        self.attack_power = attack_power
 
 
-# Test
-order1 = CoffeeOrder("Bàn 1")
-order2 = CoffeeOrder("Bàn 2")
+# Lớp con
+class Warrior(Character):
+    def __init__(self, name, hp, attack_power, bonus_armor):
+        super().__init__(name, hp, attack_power)
+        self.bonus_armor = bonus_armor
 
-order1.add_item(50000)
-order2.add_item(30000)
+    def get_total_power(self):
+        return self.attack_power + self.bonus_armor
 
-# Không thể sửa trực tiếp __total_amount
-order1.total_amount = 0  # lỗi
+    def __gt__(self, other):
+        return self.get_total_power() > other.get_total_power()
 
-CoffeeOrder.update_vat_rate(0.08)
 
-print("Tiền bàn 1:", order1.total_amount)
-print("VAT bàn 1:", order1.vat_rate)
-print("VAT bàn 2:", order2.vat_rate)
+# Tạo đối tượng
+w1 = Warrior("Arthur", 1000, 150, 50)
+w2 = Warrior("Lancelot", 900, 180, 10)
+
+print(f"Chiến binh {w1.name} xuất trận!")
+
+if w1 > w2:
+    print(f"{w1.name} mạnh hơn {w2.name}!")
+else:
+    print(f"{w2.name} mạnh hơn hoặc hòa!")

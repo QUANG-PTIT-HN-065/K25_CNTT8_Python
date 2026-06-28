@@ -2,66 +2,55 @@
 1) Phân tích lỗi
 
 Câu 1:
-Nếu points là public, người dùng có thể gán giá trị âm hoặc chuỗi ⇒ dữ liệu sai lệch, các phép tính cộng/trừ điểm có thể lỗi hoặc crash chương trình.
+Vòng lặp:
+
+for hero in team_heroes:
+    hero.use_ultimate()
+
+thể hiện tính đa hình vì mọi đối tượng đều gọi use_ultimate(), mỗi lớp tự thực hiện theo cách riêng.
 
 Câu 2:
-Dùng:
 
-@property
+Lỗi NotImplementedError xảy ra khi chạy:
+hero.use_ultimate()
 
-và:
+đến đối tượng Assassin.
 
-@points.setter
-
-để kiểm tra dữ liệu trước khi gán.
+Báo lỗi muộn vì game chỉ crash khi đang giao tranh.
 
 Câu 3:
-is_eligible_for_voucher() không sử dụng bất kỳ thuộc tính nào của đối tượng (self), nên truyền self là dư thừa và làm hàm phụ thuộc vào object một cách không cần thiết.
+Nếu dùng ABC và @abstractmethod, lỗi xảy ra ngay khi tạo đối tượng Assassin() (lúc loading trận đấu).
 
 Câu 4:
-Dùng:
-
-@staticmethod
-
-Khác với @classmethod:
-| Decorator     | Tham số đầu tiên | Truy cập Class |
-| ------------- | ---------------- | -------------- |
-| @staticmethod | Không có         | Không          |
-| @classmethod  | cls              | Có             |
-
+Fail Fast: Phát hiện và báo lỗi ngay khi khởi tạo đối tượng, không đợi đến lúc chương trình đang chạy.
 """
 
-
-class MemberCard:
-    def __init__(self, customer_name, points=0):
-        self.customer_name = customer_name
-        self.__points = points
-
-    @property
-    def points(self):
-        return self.__points
-
-    @points.setter
-    def points(self, value):
-        if isinstance(value, int) and value >= 0:
-            self.__points = value
-        else:
-            print("Dữ liệu điểm không hợp lệ!")
-
-    def add_points(self, amount):
-        if amount > 0:
-            self.__points += amount
-
-    @staticmethod
-    def is_eligible_for_voucher(bill_amount):
-        return bill_amount >= 200000
+from abc import ABC, abstractmethod
 
 
-card1 = MemberCard("Le Van C", 100)
+# Lớp cha
+class Hero(ABC):
+    @abstractmethod
+    def use_ultimate(self):
+        pass
 
-card1.points = -50  # bị từ chối
 
-result = MemberCard.is_eligible_for_voucher(250000)
+# Lớp con 1
+class Mage(Hero):
+    def use_ultimate(self):
+        print("🔥 Pháp Sư tung chiêu: MƯA SAO BĂNG!")
 
-print(f"Khách hàng: {card1.customer_name} | Điểm hiện tại: {card1.points}")
-print(f"Hóa đơn 250k có được tặng Voucher không? {result}")
+
+# Lớp con 2
+class Assassin(Hero):
+    def use_ultimate(self):
+        print("🗡️ Sát Thủ tung chiêu: ÁM SÁT TỪ PHÍA SAU!")
+
+
+print("--- LOADING TRẬN ĐẤU ---")
+team_heroes = [Mage(), Assassin()]
+print("Tải trận đấu thành công! Các tướng đã sẵn sàng...")
+
+print("\n--- GIAO TRANH TỔNG BẮT ĐẦU ---")
+for hero in team_heroes:
+    hero.use_ultimate()
