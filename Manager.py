@@ -83,10 +83,68 @@ class ProductManager:
         print("-" * 110)
 
     def update_product(self):
-        pass
+        if not self.products:
+            print("Danh sách sản phẩm trống!")
+            return
+
+        id = input("Nhập ID sản phẩm cần sửa: ").upper()
+
+        for product in self.products:
+            if product.id == id:
+                print(f"Tìm thấy: {product.name}")
+
+                while True:
+                    choice = input("Bạn có chắc muốn sửa? (Y/N): ").upper()
+
+                    if choice == "Y":
+                        product.name = validate_str("Nhập tên mới: ")
+                        product.price = validate_number("Nhập giá mới: ", float)
+                        product.quantity_sold = validate_number(
+                            "Nhập số lượng bán mới: ", int
+                        )
+                        product.discount = validate_number("Nhập giảm giá mới: ", float)
+
+                        product.calculate_revenue()
+                        product.classify_revenue()
+                        print("Cập nhật sản phẩm thành công!")
+                        return
+
+                    elif choice == "N":
+                        print("Đã hủy cập nhật.")
+                        return
+
+                    else:
+                        print("Vui lòng nhập Y hoặc N!")
+
+    print("Không tìm thấy sản phẩm!")
 
     def delete_product(self):
-        pass
+        if not self.products:
+            print("Danh sách sản phẩm trống!")
+            return
+
+        id = input("Nhập ID sản phẩm cần xóa: ").upper()
+
+        for product in self.products:
+            if product.id == id:
+                print(f"Tìm thấy: {product.name}")
+
+                while True:
+                    choice = input("Bạn có chắc muốn xóa? (Y/N): ").upper()
+
+                    if choice == "Y":
+                        self.products.remove(product)
+                        print("Xóa sản phẩm thành công!")
+                        return
+
+                    elif choice == "N":
+                        print("Đã hủy xóa.")
+                        return
+
+                    else:
+                        print("Vui lòng nhập Y hoặc N!")
+
+    print("Không tìm thấy sản phẩm!")
 
     def search_product(self):
         if not self.products:
